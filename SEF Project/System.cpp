@@ -49,7 +49,7 @@ void orderSubMenu() {
 }
 
 int main() {
-	mainMenu();
+	
 	partsSubMenu();
 	customerSubMenu();
 	orderSubMenu();
