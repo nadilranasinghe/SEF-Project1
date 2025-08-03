@@ -242,24 +242,37 @@ void listAllCustomers(Customer customers[], int count) {
 * RETURNS      : void
 */
 void searchCustomer(Customer customers[], int count) {
-
+    // Keywords entered by the user
     char keyword[51];
     int found = 0;
-
-    // Temporary array to store matched customers
-    Customer matched[MAX_CUSTOMERS];
-
-    printf("Enter keyword to search all fields: ");
-    fgets(keyword, sizeof(keyword), stdin);
-    keyword[strcspn(keyword, "\n")] = '\0';
-
-    printf("\n----- Search Results -----\n");
 
     // Handle empty customer list
     if (count == 0) {
         printf("There are no customers in the database.\n");
         // Write to log
         logMessage(LOG_INFO, "Search aborted: No customers loaded.");
+        return;
+    }
+
+    // Prompt for keyword input
+    printf("Enter keyword to search all fields: ");
+    fgets(keyword, sizeof(keyword), stdin);
+    keyword[strcspn(keyword, "\n")] = '\0';
+
+    // If the user does not enter a keyword
+    if (strlen(keyword) == 0) {
+        printf("No keyword entered. Search cancelled.\n");
+        logMessage(LOG_INFO, "Search aborted: Empty keyword.");
+        return;
+    }
+
+    printf("\n----- Search Results -----\n");
+
+    // Allocate memory dynamically for matched customers
+    Customer* matched = (Customer*)malloc(sizeof(Customer) * count);
+    if (!matched) {
+        printf("Error: Unable to allocate memory for search results.\n");
+        logMessage(LOG_ERROR, "Failed to allocate memory in searchCustomer.");
         return;
     }
 
@@ -302,6 +315,8 @@ void searchCustomer(Customer customers[], int count) {
         // Display matched customers
         Display_AllCustomers_Vertical(matched, found);
     }
+    // Free the dynamic memory
+    free(matched);
 }
 
 /*
